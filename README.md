@@ -14,7 +14,7 @@ other libraries, it **doesn't need keys, reified actions nor immutable data
 structures** to achieve similar optimizations in most cases.
 
 [Grab the files](https://github.com/tcard/restate/tree/master/dist) and
-[see the annotated source for some documentation](https://tcard.github.io/restate/restate.html).
+[see the annotated source for some documentation](https://tcard.github.io/restate/).
 
 ### ⚠️ Caution: not anywhere near production-ready
 
