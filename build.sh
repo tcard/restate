@@ -12,4 +12,5 @@ find ./examples -name '*.ts' | while read file; do
 	tsc --noEmit false --target es3 --sourceMap ./dist/restate.es5.d.ts "$file"
 done
 
-docco restate.ts
+rm -r docs
+docco restate.ts && mv docs/restate.html docs/index.html
