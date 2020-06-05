@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Restate</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h1 id="restate">Restate</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p><strong>Restate</strong> is a ~1 KB gzipped, virtual DOM-based, React-inspired, reasonably
+performant JavaScript library for building interactive HTML.</p>
+<p>In Restate, you pass a value representing your application’s <strong>state</strong> and a
+function to <strong>present</strong> it as HTML (or, more generally, as DOM objects).
+Restate will then call your present function any time the state changes to
+get the new HTML it corresponds to.</p>
+<p>Similarly to Elm and Redux, there’s a <strong>single state value</strong> and a <strong>pure
+HTML-producing function</strong>; state mutation is more like React’s. Compared to
+other libraries, it <strong>doesn’t need keys, reified actions nor immutable data
+structures</strong> to achieve similar optimizations in most cases.</p>
+<p>This is its commented source code. <a href="https://github.com/tcard/restate">See examples and get the library on
+GitHub!</a></p>
+<h3 id="⚠️-caution-not-anywhere-near-production-ready">⚠️ Caution: not anywhere near production-ready</h3>
+<p>This is all just an experiment. I haven’t even used it that much. It may be
+broken, maybe irremediably so. </p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <h2 id="the-state-tree">The state tree</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Typically, your state will be a tree: either an object or an array with
+other objects and arrays inside. If only some parts of your state change,
+Restate is smart enough to <strong>only generate HTML for the parts that changed</strong>,
+if you help a bit.</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <h2 id="present">Present</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>A <strong>present function</strong> turns a <strong>node from the state</strong> tree into markup
+(typically, <strong>HTML</strong>). It may also take additional arguments.</p>
+<p>You’ll want to make one of these for each node in your state tree. This way,
+Restate <strong>will remember the Markup</strong> each of these produced and, when
+refreshing the page’s markup, <strong>only call those whose state node and
+arguments changed</strong>.</p>
+<p>A Present function should always <strong>produce the same Markup given the same
+state and arguments</strong> for this optimization to work.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">type</span> Present = (
+    cursor: Cursor,
+    ...args: <span class="hljs-built_in">any</span>[]
+) =&gt; Markup;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Markup represents a DOM node as a tuple.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">type</span> Markup =</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>it’s either an element…</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    Elem</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>… or a text node.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    | {toString: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">string</span>}
+;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Elem is a representation of a DOM element.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">type</span> Elem = [</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>It has a tag name: <code>p</code>, <code>div</code>, <code>a</code>, etc.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-built_in">string</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>It has attributes, like: <code>{href: &#39;http://example.com&#39;, class: &#39;example&#39;}</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    Dict&lt;<span class="hljs-built_in">string</span> | <span class="hljs-built_in">Function</span>&gt;,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>And it has children.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    [Markup]
+];</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Dict is an alias for an object with arbitrary keys.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">type</span> Dict&lt;T&gt; = {[key: <span class="hljs-built_in">string</span>]: T};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <h2 id="state-cursor">State cursor</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>A present function is handed a <strong>cursor</strong> that points to a <strong>node in the
+state tree</strong>.</p>
+<p>From this cursor, it can <strong>walk the tree</strong>, getting cursor for parent and
+child nodes.</p>
+<p>A present function will typically <strong>call <code>child</code></strong> to get a cursor for a
+child node from the state tree, and <strong>then <code>present</code></strong> to include the child’s
+HTML into its own.</p>
+<p>By <strong>calling <code>set</code>, a new presentation is triggered</strong> and new HTML to replace
+the old one is generated by the present functions. <strong>Only the cursor’s
+associated state tree node and its children</strong> are assumed to have possibly
+changed; other nodes are assumed unchanged. This way, Restate can <strong>avoid
+redundant calls</strong> to present functions by <strong>reusing parts of the old HTML</strong>
+instead.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">type</span> Cursor = {
+    parent: Cursor | <span class="hljs-literal">null</span>;
+    root: Cursor;
+    child: <span class="hljs-function">(<span class="hljs-params">key: StateKey</span>) =&gt;</span> Cursor | <span class="hljs-literal">null</span>;
+
+    state: <span class="hljs-built_in">any</span>;
+    <span class="hljs-keyword">set</span>: <span class="hljs-function">(<span class="hljs-params">newState: <span class="hljs-built_in">any</span></span>) =&gt;</span> <span class="hljs-built_in">void</span>;
+
+    present: <span class="hljs-function">(<span class="hljs-params">present: Present, ...presentArgs: <span class="hljs-built_in">any</span>[]</span>) =&gt;</span> <span class="hljs-built_in">void</span>;
+};
+
+<span class="hljs-keyword">type</span> StateKey = <span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <h2 id="the-restate-function">The Restate function</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p><code>Restate</code> is the only variable exported by the library. It takes the DOM
+element on which to put the DOM Restate produces, and the root of the 
+state tree with its present function.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> Restate: (
+    rootElement: Element,
+    rootState: <span class="hljs-built_in">any</span>,
+    present: Present,
+    ...presentArgs: <span class="hljs-built_in">any</span>[]
+) =&gt; <span class="hljs-built_in">void</span> = <span class="hljs-function">(<span class="hljs-params">(<span class="hljs-params"></span>) =&gt; {
+
+</span></span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>From here on, it’s all implementation details. Maybe some day it will be
+commented too!</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="hljs-keyword">let</span> { setAttribute, removeAttribute, appendChild, removeChild, replaceChild, insertBefore } = Element.prototype;
+<span class="hljs-keyword">let</span> { createElement, createTextNode } = <span class="hljs-built_in">document</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p><code>onDOMOperation</code> may be a function to be notified about the DOM operations
+the library performs. Useful for testing.</p>
+<p>We rely on minifiers to get rid of the overhead in case it’s <code>null</code>, by
+removing the whole <code>if</code> block.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">let</span> onDOMOperation: <span class="hljs-function">(<span class="hljs-params">(<span class="hljs-params">operation: <span class="hljs-built_in">any</span></span>) =&gt; <span class="hljs-built_in">void</span></span>) | <span class="hljs-params">null</span> = <span class="hljs-params">null</span>;
+<span class="hljs-params">if</span> (<span class="hljs-params">onDOMOperation</span>) {
+    <span class="hljs-params">setAttribute</span> = <span class="hljs-params">function</span>(<span class="hljs-params"><span class="hljs-keyword">this</span>: <span class="hljs-built_in">any</span>, name: <span class="hljs-built_in">string</span>, value: <span class="hljs-built_in">any</span></span>) {
+        <span class="hljs-params">onDOMOperation</span>!(<span class="hljs-params">{
+            <span class="hljs-keyword">type</span>: 'setAttribute',
+            element: <span class="hljs-keyword">this</span>,
+            name: name,
+            value: value,
+        }</span>);
+        <span class="hljs-params">return</span> <span class="hljs-params">this</span>.<span class="hljs-params">setAttribute</span>(<span class="hljs-params">name, value</span>);
+    };
+
+    <span class="hljs-params">removeAttribute</span> = <span class="hljs-params">function</span>(<span class="hljs-params"><span class="hljs-keyword">this</span>: <span class="hljs-built_in">any</span>, name: <span class="hljs-built_in">string</span></span>) {
+        <span class="hljs-params">onDOMOperation</span>!(<span class="hljs-params">{
+            <span class="hljs-keyword">type</span>: 'removeAttribute',
+            element: <span class="hljs-keyword">this</span>,
+            name: name,
+        }</span>);
+        <span class="hljs-params">this</span>.<span class="hljs-params">removeAttribute</span>(<span class="hljs-params">name</span>);
+    };
+
+    <span class="hljs-params">appendChild</span> = <span class="hljs-params">function</span>(<span class="hljs-params"><span class="hljs-keyword">this</span>: <span class="hljs-built_in">any</span>, child: Node</span>) {
+        <span class="hljs-params">onDOMOperation</span>!(<span class="hljs-params">{
+            <span class="hljs-keyword">type</span>: 'appendChild',
+            parent: <span class="hljs-keyword">this</span>,
+            child: child,
+        }</span>);
+        <span class="hljs-params">return</span> <span class="hljs-params">this</span>.<span class="hljs-params">appendChild</span>(<span class="hljs-params">child</span>);
+    };
+
+    <span class="hljs-params">removeChild</span> = <span class="hljs-params">function</span>(<span class="hljs-params"><span class="hljs-keyword">this</span>: <span class="hljs-built_in">any</span>, child: Node</span>) {
+        <span class="hljs-params">onDOMOperation</span>!(<span class="hljs-params">{
+            <span class="hljs-keyword">type</span>: 'removeChild',
+            parent: <span class="hljs-keyword">this</span>,
+            child: child,
+        }</span>);
+        <span class="hljs-params">return</span> <span class="hljs-params">this</span>.<span class="hljs-params">removeChild</span>(<span class="hljs-params">child</span>);
+    };
+
+    <span class="hljs-params">replaceChild</span> = <span class="hljs-params">function</span>(<span class="hljs-params"><span class="hljs-keyword">this</span>: <span class="hljs-built_in">any</span>, newChild: Node, oldChild: Node</span>) {
+        <span class="hljs-params">onDOMOperation</span>!(<span class="hljs-params">{
+            <span class="hljs-keyword">type</span>: 'replaceChild',
+            parent: <span class="hljs-keyword">this</span>,
+            newChild: newChild,
+            oldChild: oldChild,
+        }</span>);
+        <span class="hljs-params">return</span> <span class="hljs-params">this</span>.<span class="hljs-params">replaceChild</span>(<span class="hljs-params">newChild, oldChild</span>);
+    };
+
+    <span class="hljs-params">insertBefore</span> = <span class="hljs-params">function</span>(<span class="hljs-params"><span class="hljs-keyword">this</span>: <span class="hljs-built_in">any</span>, newChild: Node, refChild: Node</span>) {
+        <span class="hljs-params">onDOMOperation</span>!(<span class="hljs-params">{
+            <span class="hljs-keyword">type</span>: 'insertBefore',
+            parent: <span class="hljs-keyword">this</span>,
+            newChild: newChild,
+            refChild: refChild,
+        }</span>);
+        <span class="hljs-params">return</span> <span class="hljs-params">this</span>.<span class="hljs-params">insertBefore</span>(<span class="hljs-params">newChild, refChild</span>);
+    };
+
+    <span class="hljs-params">createElement</span> = <span class="hljs-params">function</span>(<span class="hljs-params"><span class="hljs-keyword">this</span>: <span class="hljs-built_in">any</span>, tagName: <span class="hljs-built_in">string</span></span>) {
+        <span class="hljs-params">let</span> <span class="hljs-params">e</span> = <span class="hljs-params">this</span>.<span class="hljs-params">createElement</span>(<span class="hljs-params">tagName</span>);
+        <span class="hljs-params">onDOMOperation</span>!(<span class="hljs-params">{
+            <span class="hljs-keyword">type</span>: 'createElement',
+            element: e,
+        }</span>);
+        <span class="hljs-params">return</span> <span class="hljs-params">e</span>;
+    };
+
+    <span class="hljs-params">createTextNode</span> = <span class="hljs-params">function</span>(<span class="hljs-params"><span class="hljs-keyword">this</span>: <span class="hljs-built_in">any</span>, text: <span class="hljs-built_in">string</span></span>) {
+        <span class="hljs-params">let</span> <span class="hljs-params">node</span> = <span class="hljs-params">this</span>.<span class="hljs-params">createTextNode</span>(<span class="hljs-params">text</span>);
+        <span class="hljs-params">onDOMOperation</span>!(<span class="hljs-params">{
+            <span class="hljs-keyword">type</span>: 'createTextNode',
+            node: node,
+        }</span>);
+        <span class="hljs-params">return</span> <span class="hljs-params">node</span>;
+    };
+}
+
+<span class="hljs-params">function</span> <span class="hljs-params">realizeAttr</span>(<span class="hljs-params">e: Element, name: <span class="hljs-built_in">string</span>, value: <span class="hljs-built_in">string</span> | <span class="hljs-built_in">Function</span> | <span class="hljs-literal">null</span></span>) {
+    <span class="hljs-params">if</span> (<span class="hljs-params"><span class="hljs-keyword">typeof</span> value !== '<span class="hljs-built_in">string</span>'</span>) {
+        (<span class="hljs-params">e <span class="hljs-keyword">as</span> Dict&lt;<span class="hljs-built_in">any</span>&gt;</span>)[<span class="hljs-params">name</span>] = <span class="hljs-params">value</span>;
+    } <span class="hljs-params">else</span> <span class="hljs-params">if</span> (<span class="hljs-params">value</span>) {
+        <span class="hljs-params">setAttribute</span>.<span class="hljs-params">call</span>(<span class="hljs-params">e, name, value</span>);
+        <span class="hljs-params">if</span> (<span class="hljs-params">name === 'value'</span>) {
+</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>value isn’t just an attribute, but a field in the underlying
+node object that isn’t set when the attribute is set.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            (e <span class="hljs-keyword">as</span> <span class="hljs-built_in">any</span>).value = value;
+        }
+    } <span class="hljs-keyword">else</span> {
+        removeAttribute.call(e, name);
+    }
+};
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">realizeDOM</span>(<span class="hljs-params">virtual: Markup</span>): <span class="hljs-title">Node</span> </span>{
+    <span class="hljs-keyword">if</span> (!(virtual <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Array</span>)) {
+        <span class="hljs-keyword">return</span> createTextNode.call(<span class="hljs-built_in">document</span>, virtual.toString());
+    }
+
+    <span class="hljs-keyword">let</span> [tagName, attrs, children] = virtual;
+    <span class="hljs-keyword">let</span> e = createElement.call(<span class="hljs-built_in">document</span>, tagName);
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> attr <span class="hljs-keyword">in</span> attrs) {
+        realizeAttr(e, attr, attrs[attr]);
+    }
+
+    children.forEach(<span class="hljs-function">(<span class="hljs-params">child</span>) =&gt;</span> {
+        appendChild.call(e, realizeDOM(child));
+    });
+
+    <span class="hljs-keyword">return</span> e;
+};
+
+<span class="hljs-keyword">return</span> (
+    rootElement: Element,
+    rootState: <span class="hljs-built_in">any</span>,
+    present: Present,
+    ...presentArgs: <span class="hljs-built_in">any</span>[]
+): <span class="hljs-function"><span class="hljs-params">void</span> =&gt;</span> {
+    <span class="hljs-keyword">while</span> (rootElement.firstChild) { 
+        removeChild.call(rootElement, rootElement.firstChild);
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>Here’s where the magic happens, mostly.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">let</span> updateDOM = (
+        parent: Node,
+        e: Node,
+        oldDOM?: Markup,
+        newDOM?: Markup,
+    ): <span class="hljs-function"><span class="hljs-params">void</span> =&gt;</span> {
+        <span class="hljs-keyword">if</span> (oldDOM === newDOM) {
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (newDOM === <span class="hljs-literal">undefined</span>) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>Nothing at new DOM; remove the old real DOM node from its parent.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            removeChild.call(parent, e);
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (oldDOM === <span class="hljs-literal">undefined</span>) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>New node; just append it, as we know pos will be the last
+one, given there’s no corresponding node in the old DOM.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            appendChild.call(parent, realizeDOM(newDOM));
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (!(newDOM <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Array</span>)) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>New text node.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span> (oldDOM != newDOM) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>Only replace if contents changed.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                replaceChild.call(parent, realizeDOM(newDOM), e);
+            }
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">let</span> [ oldTag, oldAttrs, oldChildren ] = oldDOM <span class="hljs-keyword">as</span> Elem;
+            <span class="hljs-keyword">let</span> [ newTag, newAttrs, newChildren ] = newDOM <span class="hljs-keyword">as</span> Elem;
+            <span class="hljs-keyword">if</span> (oldTag != newTag) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p>If tags differ, throw old away.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                replaceChild.call(parent, realizeDOM(newDOM), e);
+                <span class="hljs-keyword">return</span>;
+            }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <h3 id="attributes-reconciliation">Attributes reconciliation</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+            <span class="hljs-keyword">let</span> newKeys: (<span class="hljs-built_in">string</span> | <span class="hljs-literal">undefined</span>)[] = <span class="hljs-built_in">Object</span>.keys(newAttrs);
+            newKeys.sort();
+            <span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>;
+            <span class="hljs-keyword">let</span> oldKeys = <span class="hljs-built_in">Object</span>.keys(oldAttrs);
+            oldKeys.sort();
+
+            newKeys.concat([<span class="hljs-literal">undefined</span>]).forEach(<span class="hljs-function">(<span class="hljs-params">newK</span>) =&gt;</span> {
+                <span class="hljs-keyword">while</span> (i &lt;= oldKeys.length) { <span class="hljs-comment">// Will yield past the array, so last oldVal will be undefined.</span>
+                    <span class="hljs-keyword">let</span> oldK = oldKeys[i];
+                    <span class="hljs-keyword">let</span> oldVal = oldAttrs[oldK];
+                    <span class="hljs-keyword">let</span> newVal = newAttrs[newK <span class="hljs-keyword">as</span> <span class="hljs-built_in">string</span> <span class="hljs-comment">/* undefined yields undefined value, so it's fine */</span>];
+
+                    <span class="hljs-keyword">if</span> (oldK == newK) {
+                        <span class="hljs-keyword">if</span> (oldVal != newVal) {
+                            realizeAttr(e <span class="hljs-keyword">as</span> Element, newK, newVal);
+                        }
+                        i++; <span class="hljs-keyword">return</span>; <span class="hljs-comment">// Advance both.</span>
+                    }
+
+                    <span class="hljs-keyword">if</span> (newK === <span class="hljs-literal">undefined</span> || newK &gt; oldK) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p>Got deleted.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                        realizeAttr(e <span class="hljs-keyword">as</span> Element, oldK, <span class="hljs-literal">null</span>);
+                        i++; <span class="hljs-keyword">continue</span>; <span class="hljs-comment">// Advance oldK.</span>
+                    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <p>Got added.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    realizeAttr(e <span class="hljs-keyword">as</span> Element, newK, newVal);
+                    <span class="hljs-keyword">return</span>; <span class="hljs-comment">// Advance newK.</span>
+                }
+            });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <h3 id="children-reconciliation">Children reconciliation</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <p>Here’s the gist of it: since we memoize Markups, and only Markups
+associated with state that changed gets regenerated, we can just
+assume the same child still has <em>the same Markup object</em>, even
+if the child got reordered with respect to its parent, and just
+use identity comparison to find its corresponding DOM node.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">let</span> newPositions = <span class="hljs-keyword">new</span> Map&lt;Markup, <span class="hljs-built_in">number</span>&gt;();
+            newChildren.forEach(<span class="hljs-function">(<span class="hljs-params">c, newPos</span>) =&gt;</span> {
+                newPositions.set(c, newPos);
+            });
+
+            <span class="hljs-keyword">let</span> swaps = <span class="hljs-keyword">new</span> Map&lt;<span class="hljs-built_in">number</span>, <span class="hljs-built_in">number</span>&gt;();
+            oldChildren.forEach(<span class="hljs-function">(<span class="hljs-params">c, oldPos</span>) =&gt;</span> {
+                <span class="hljs-keyword">let</span> swapped = swaps.get(oldPos);
+                <span class="hljs-keyword">if</span> (swapped !== <span class="hljs-literal">undefined</span>) {
+                    oldPos = swapped;
+                }
+
+                <span class="hljs-keyword">let</span> newPos = newPositions.get(c);
+                <span class="hljs-keyword">if</span> (newPos === <span class="hljs-literal">undefined</span> || newPos === oldPos) {
+                    <span class="hljs-keyword">return</span>;
+                }
+
+                swaps.set(newPos, oldPos);
+            });
+            swaps.forEach(<span class="hljs-function">(<span class="hljs-params">l, r</span>) =&gt;</span> {
+                <span class="hljs-keyword">if</span> (l &gt; r) {
+                    <span class="hljs-keyword">let</span> tmp = l;
+                    r = l;
+                    l = tmp;
+                } 
+
+                <span class="hljs-keyword">let</span> tmp = oldChildren[l];
+                oldChildren[l] = oldChildren[r];
+                oldChildren[r] = tmp;
+
+                <span class="hljs-keyword">let</span> lNode = parent.childNodes[l];
+                <span class="hljs-keyword">let</span> rNode = parent.childNodes[r];
+                <span class="hljs-keyword">let</span> rNext = rNode.nextSibling;
+                insertBefore.call(parent, rNode, lNode);
+                insertBefore.call(parent, lNode, rNext)
+            });
+
+            <span class="hljs-keyword">let</span> realChildren: Node[] = [];
+            <span class="hljs-built_in">Array</span>.prototype.forEach.call(e.childNodes, <span class="hljs-function"><span class="hljs-params">v</span> =&gt;</span> realChildren.push(v));
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-built_in">Math</span>.max(newChildren.length, oldChildren.length); i++) {
+                updateDOM(e, realChildren[i], oldChildren[i], newChildren[i]);
+            }
+        }
+    };
+
+    <span class="hljs-keyword">const</span> updateRootElement = <span class="hljs-function">(<span class="hljs-params">(<span class="hljs-params"></span>) =&gt; {
+        <span class="hljs-keyword">let</span> currentDOM: Markup | <span class="hljs-literal">undefined</span>;
+        <span class="hljs-keyword">return</span> (<span class="hljs-params">newDOM: Markup</span>) =&gt; {
+            updateDOM(<span class="hljs-params">rootElement, rootElement.childNodes[0], currentDOM, newDOM</span>);
+            currentDOM = newDOM;
+        };
+    }</span>)<span class="hljs-params">()</span>;
+
+    <span class="hljs-params">type</span> <span class="hljs-params">CachedMarkup</span> = {
+        <span class="hljs-params">cached</span>: [ <span class="hljs-params">Present</span>, <span class="hljs-params">any</span>[], <span class="hljs-params">Markup</span> ] | <span class="hljs-params">undefined</span>,
+        <span class="hljs-params">children</span>: <span class="hljs-params">CachedMarkups</span> | <span class="hljs-params">undefined</span>,
+    };
+    <span class="hljs-params">type</span> <span class="hljs-params">CachedMarkups</span> = <span class="hljs-params">CachedMarkup</span>[] | <span class="hljs-params">Dict</span>&lt;<span class="hljs-params">CachedMarkup</span>&gt;;
+    <span class="hljs-params">function</span> <span class="hljs-params">cachedMarkupsForKey</span>&lt;<span class="hljs-params">K</span>&gt;(<span class="hljs-params">markups: CachedMarkups</span>): <span class="hljs-params">K</span> <span class="hljs-params">extends</span> <span class="hljs-params">number</span> ? <span class="hljs-params">CachedMarkup</span>[] : <span class="hljs-params">Dict</span>&lt;<span class="hljs-params">CachedMarkup</span>&gt; {
+        <span class="hljs-params">return</span> <span class="hljs-params">markups</span> <span class="hljs-params">as</span> (<span class="hljs-params">K <span class="hljs-keyword">extends</span> <span class="hljs-built_in">number</span> ? CachedMarkup[] : Dict&lt;CachedMarkup&gt;</span>);
+    }
+
+    <span class="hljs-params">let</span> <span class="hljs-params">rootCachedMarkup</span> = {} <span class="hljs-params">as</span> <span class="hljs-params">CachedMarkup</span>;
+
+    <span class="hljs-params">const</span> <span class="hljs-params">makeCursor</span> = (<span class="hljs-params">
+        state: <span class="hljs-built_in">any</span>,
+        path: StateKey[],
+        cachedMarkup: CachedMarkup,
+        updatingPath: StateKey[],
+        root?: Cursor,
+        parent?: Cursor,
+    </span>): <span class="hljs-params">Cursor</span> =&gt;</span> {
+        <span class="hljs-keyword">let</span> [updatingKey, ...nextUpdatingPath] = updatingPath;
+        <span class="hljs-keyword">if</span> (updatingPath.length == <span class="hljs-number">1</span>) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-33">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-33">&#182;</a>
+              </div>
+              <p>We’ve reached the end of the updating cursor. Subtree
+shouldn’t use saved DOMs anymore, as they may change.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            cachedMarkup = {} <span class="hljs-keyword">as</span> CachedMarkup;
+        }
+        cachedMarkup.children = cachedMarkup.children || (state <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Array</span> ? [] : {});
+
+        <span class="hljs-keyword">let</span> cursor = {
+            parent: parent || <span class="hljs-literal">null</span>,
+            root: root,
+            child: <span class="hljs-function">(<span class="hljs-params">key: StateKey</span>) =&gt;</span> {
+                <span class="hljs-keyword">if</span> (state === <span class="hljs-literal">undefined</span>) {
+                    <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+                }
+                
+                <span class="hljs-keyword">let</span> markupChildren = cachedMarkupsForKey(cachedMarkup.children <span class="hljs-keyword">as</span> CachedMarkups);
+                <span class="hljs-keyword">let</span> markupChild = markupChildren[key];
+                <span class="hljs-keyword">if</span> (markupChild === <span class="hljs-literal">undefined</span>) {
+                    markupChild = {} <span class="hljs-keyword">as</span> CachedMarkup;
+                    markupChildren[key] = markupChild;
+                }
+
+                <span class="hljs-keyword">return</span> makeCursor(
+                    state[key],
+                    [...path, key],
+                    markupChild,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-34">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-34">&#182;</a>
+              </div>
+              <p>Only pass nextUpdatingPath is the child is in the
+updating path.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    key === updatingKey ? nextUpdatingPath : [],
+                    root,
+                    cursor <span class="hljs-keyword">as</span> Cursor,
+                );
+            },
+
+            state: state,
+            <span class="hljs-keyword">set</span>: <span class="hljs-function">(<span class="hljs-params">newState: <span class="hljs-built_in">any</span></span>) =&gt;</span> {
+                <span class="hljs-keyword">let</span> updating: <span class="hljs-built_in">any</span> = rootState;
+                path.forEach(<span class="hljs-function">(<span class="hljs-params">k, i</span>) =&gt;</span> {
+                    <span class="hljs-keyword">if</span> (i == path.length - <span class="hljs-number">1</span>) {
+                        updating[k] = newState;
+                    } <span class="hljs-keyword">else</span> {
+                        updating = updating[k];
+                    }
+                });
+                updateRootElement(present(makeCursor(rootState, [], rootCachedMarkup, path), ...presentArgs));
+            },
+
+            present: <span class="hljs-function">(<span class="hljs-params">present: Present, ...args: <span class="hljs-built_in">any</span>[]</span>) =&gt;</span> {
+                <span class="hljs-keyword">let</span> cached = cachedMarkup.cached;
+                <span class="hljs-keyword">if</span> (cached !== <span class="hljs-literal">undefined</span> &amp;&amp; cached[<span class="hljs-number">0</span>] === present &amp;&amp; args.filter(<span class="hljs-function">(<span class="hljs-params">v, i</span>) =&gt;</span> cached![<span class="hljs-number">1</span>][i] !== v).length == <span class="hljs-number">0</span>) {
+                    <span class="hljs-keyword">return</span> cached[<span class="hljs-number">2</span>];
+                }
+                <span class="hljs-keyword">return</span> present(cursor <span class="hljs-keyword">as</span> Cursor, ...args);
+            },
+        };
+
+        <span class="hljs-keyword">if</span> (root === <span class="hljs-literal">undefined</span>) {
+            cursor.root = cursor <span class="hljs-keyword">as</span> Cursor;
+            root = cursor <span class="hljs-keyword">as</span> Cursor;
+        }
+
+        <span class="hljs-keyword">return</span> cursor <span class="hljs-keyword">as</span> Cursor;
+    };
+
+    updateRootElement(present(makeCursor(rootState, [], rootCachedMarkup, [])));
+};
+
+})();</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

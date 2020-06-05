@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "module": "system",
+    "strict": true,
+    "preserveConstEnums": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "sourceMap": true,
+    "target": "es3",
+    "lib": [
+      "DOM",
+      "ES5",
+    ],
+    "noEmit": true,
+  },
+  "include": [
+    "**/*.ts"
+  ],
+  "exclude": [
+    "dist/**/*"
+  ],
+  "types": [],
+  "compileOnSave": true
+}
