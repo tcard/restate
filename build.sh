@@ -13,4 +13,4 @@ find ./examples -name '*.ts' | while read file; do
 done
 
 rm -r docs
-docco restate.ts && mv docs/restate.html docs/index.html
+docco restate.ts
