@@ -223,7 +223,7 @@ state and arguments</strong> for this optimization to work.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    [Markup]
+            <div class="content"><div class='highlight'><pre>    Markup[]
 ];</pre></div></div>
             
         </li>
@@ -719,7 +719,7 @@ use identity comparison to find its corresponding DOM node.</p>
                 }
 
                 <span class="hljs-keyword">let</span> newPos = newPositions.get(c);
-                <span class="hljs-keyword">if</span> (newPos === <span class="hljs-literal">undefined</span> || newPos === oldPos) {
+                <span class="hljs-keyword">if</span> (newPos === <span class="hljs-literal">undefined</span> || newPos === oldPos || newPos &gt;= oldChildren.length) {
                     <span class="hljs-keyword">return</span>;
                 }
 
@@ -736,11 +736,11 @@ use identity comparison to find its corresponding DOM node.</p>
                 oldChildren[l] = oldChildren[r];
                 oldChildren[r] = tmp;
 
-                <span class="hljs-keyword">let</span> lNode = parent.childNodes[l];
-                <span class="hljs-keyword">let</span> rNode = parent.childNodes[r];
+                <span class="hljs-keyword">let</span> lNode = e.childNodes[l];
+                <span class="hljs-keyword">let</span> rNode = e.childNodes[r];
                 <span class="hljs-keyword">let</span> rNext = rNode.nextSibling;
-                insertBefore.call(parent, rNode, lNode);
-                insertBefore.call(parent, lNode, rNext)
+                insertBefore.call(e, rNode, lNode);
+                insertBefore.call(e, lNode, rNext)
             });
 
             <span class="hljs-keyword">let</span> realChildren: Node[] = [];

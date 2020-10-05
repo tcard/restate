@@ -205,7 +205,7 @@ var Restate = (function () {
                         oldPos = swapped;
                     }
                     var newPos = newPositions_1.get(c);
-                    if (newPos === undefined || newPos === oldPos) {
+                    if (newPos === undefined || newPos === oldPos || newPos >= oldChildren_1.length) {
                         return;
                     }
                     swaps_1.set(newPos, oldPos);
@@ -219,11 +219,11 @@ var Restate = (function () {
                     var tmp = oldChildren_1[l];
                     oldChildren_1[l] = oldChildren_1[r];
                     oldChildren_1[r] = tmp;
-                    var lNode = parent.childNodes[l];
-                    var rNode = parent.childNodes[r];
+                    var lNode = e.childNodes[l];
+                    var rNode = e.childNodes[r];
                     var rNext = rNode.nextSibling;
-                    insertBefore.call(parent, rNode, lNode);
-                    insertBefore.call(parent, lNode, rNext);
+                    insertBefore.call(e, rNode, lNode);
+                    insertBefore.call(e, lNode, rNext);
                 });
                 var realChildren_1 = [];
                 Array.prototype.forEach.call(e.childNodes, function (v) { return realChildren_1.push(v); });

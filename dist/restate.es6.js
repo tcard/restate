@@ -193,7 +193,7 @@ const Restate = (() => {
                         oldPos = swapped;
                     }
                     let newPos = newPositions.get(c);
-                    if (newPos === undefined || newPos === oldPos) {
+                    if (newPos === undefined || newPos === oldPos || newPos >= oldChildren.length) {
                         return;
                     }
                     swaps.set(newPos, oldPos);
@@ -207,11 +207,11 @@ const Restate = (() => {
                     let tmp = oldChildren[l];
                     oldChildren[l] = oldChildren[r];
                     oldChildren[r] = tmp;
-                    let lNode = parent.childNodes[l];
-                    let rNode = parent.childNodes[r];
+                    let lNode = e.childNodes[l];
+                    let rNode = e.childNodes[r];
                     let rNext = rNode.nextSibling;
-                    insertBefore.call(parent, rNode, lNode);
-                    insertBefore.call(parent, lNode, rNext);
+                    insertBefore.call(e, rNode, lNode);
+                    insertBefore.call(e, lNode, rNext);
                 });
                 let realChildren = [];
                 Array.prototype.forEach.call(e.childNodes, v => realChildren.push(v));

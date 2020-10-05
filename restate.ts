@@ -60,7 +60,7 @@ type Elem = [
     // It has attributes, like: `{href: 'http://example.com', class: 'example'}`
     Dict<string | Function>,
     // And it has children.
-    [Markup]
+    Markup[]
 ];
 
 // Dict is an alias for an object with arbitrary keys.
@@ -326,7 +326,7 @@ return (
                 }
 
                 let newPos = newPositions.get(c);
-                if (newPos === undefined || newPos === oldPos) {
+                if (newPos === undefined || newPos === oldPos || newPos >= oldChildren.length) {
                     return;
                 }
 
@@ -343,11 +343,11 @@ return (
                 oldChildren[l] = oldChildren[r];
                 oldChildren[r] = tmp;
 
-                let lNode = parent.childNodes[l];
-                let rNode = parent.childNodes[r];
+                let lNode = e.childNodes[l];
+                let rNode = e.childNodes[r];
                 let rNext = rNode.nextSibling;
-                insertBefore.call(parent, rNode, lNode);
-                insertBefore.call(parent, lNode, rNext)
+                insertBefore.call(e, rNode, lNode);
+                insertBefore.call(e, lNode, rNext)
             });
 
             let realChildren: Node[] = [];

@@ -117,7 +117,7 @@ declare type Present = (cursor: Cursor, ...args: any[]) => Markup;
 declare type Markup = Elem | {
     toString: () => string;
 };
-declare type Elem = [string, Dict<string | Function>, [Markup]];
+declare type Elem = [string, Dict<string | Function>, Markup[]];
 declare type Dict<T> = {
     [key: string]: T;
 };
