@@ -92,7 +92,7 @@ type Cursor = {
     state: any;
     set: (newState: any) => void;
 
-    present: (present: Present, ...presentArgs: any[]) => void;
+    present: (present: Present, ...presentArgs: any[]) => Markup;
 };
 
 type StateKey = string | number;
@@ -433,7 +433,7 @@ return (
                 updateRootElement(present(makeCursor(rootState, [], rootCachedMarkup, path), ...presentArgs));
             },
 
-            present: (present: Present, ...args: any[]) => {
+            present: (present: Present, ...args: any[]): Markup => {
                 let cached = cachedMarkup.cached;
                 if (cached !== undefined && cached[0] === present && args.filter((v, i) => cached![1][i] !== v).length == 0) {
                     return cached[2];

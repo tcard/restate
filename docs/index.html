@@ -287,7 +287,7 @@ instead.</p>
     state: <span class="hljs-built_in">any</span>;
     <span class="hljs-keyword">set</span>: <span class="hljs-function">(<span class="hljs-params">newState: <span class="hljs-built_in">any</span></span>) =&gt;</span> <span class="hljs-built_in">void</span>;
 
-    present: <span class="hljs-function">(<span class="hljs-params">present: Present, ...presentArgs: <span class="hljs-built_in">any</span>[]</span>) =&gt;</span> <span class="hljs-built_in">void</span>;
+    present: <span class="hljs-function">(<span class="hljs-params">present: Present, ...presentArgs: <span class="hljs-built_in">any</span>[]</span>) =&gt;</span> Markup;
 };
 
 <span class="hljs-keyword">type</span> StateKey = <span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span>;</pre></div></div>
@@ -852,7 +852,7 @@ updating path.</p>
                 updateRootElement(present(makeCursor(rootState, [], rootCachedMarkup, path), ...presentArgs));
             },
 
-            present: <span class="hljs-function">(<span class="hljs-params">present: Present, ...args: <span class="hljs-built_in">any</span>[]</span>) =&gt;</span> {
+            present: (present: Present, ...args: <span class="hljs-built_in">any</span>[]): <span class="hljs-function"><span class="hljs-params">Markup</span> =&gt;</span> {
                 <span class="hljs-keyword">let</span> cached = cachedMarkup.cached;
                 <span class="hljs-keyword">if</span> (cached !== <span class="hljs-literal">undefined</span> &amp;&amp; cached[<span class="hljs-number">0</span>] === present &amp;&amp; args.filter(<span class="hljs-function">(<span class="hljs-params">v, i</span>) =&gt;</span> cached![<span class="hljs-number">1</span>][i] !== v).length == <span class="hljs-number">0</span>) {
                     <span class="hljs-keyword">return</span> cached[<span class="hljs-number">2</span>];

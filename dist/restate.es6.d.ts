@@ -12,7 +12,7 @@ declare type Cursor = {
     child: (key: StateKey) => Cursor | null;
     state: any;
     set: (newState: any) => void;
-    present: (present: Present, ...presentArgs: any[]) => void;
+    present: (present: Present, ...presentArgs: any[]) => Markup;
 };
 declare type StateKey = string | number;
 declare const Restate: (rootElement: Element, rootState: any, present: Present, ...presentArgs: any[]) => void;
