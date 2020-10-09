@@ -1,8 +1,8 @@
 
 (function() {
 
-function presentCounters(cursor: Cursor): Markup {
-	let counters = cursor.state as number[];
+function presentCounters(cursor: Cursor<number[]>): Markup {
+	let counters = cursor.state;
 	let order = counters.map((_, i) => i);
 	order.sort((a, b) => counters[a] > counters[b] ? -1 : (counters[a] == counters[b] ? 0 : 1));
 	return ['div', {}, [
@@ -17,7 +17,7 @@ function presentCounters(cursor: Cursor): Markup {
 	]];
 };
 
-function presentCounter(cursor: Cursor, i: number, pos: number): Markup {
+function presentCounter(cursor: Cursor<number>, i: number, pos: number): Markup {
 	return ['p', {
 		style: `background-color: ${pos % 2 == 0 ? 'white' : 'yellow'}`
 	}, [

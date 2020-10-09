@@ -41,7 +41,7 @@
 // A Present function should always **produce the same Markup given the same
 // state and arguments** for this optimization to work.
 type Present = (
-    cursor: Cursor,
+    cursor: Cursor<any>,
     ...args: any[]
 ) => Markup;
 
@@ -84,13 +84,13 @@ type Dict<T> = {[key: string]: T};
 // changed; other nodes are assumed unchanged. This way, Restate can **avoid
 // redundant calls** to present functions by **reusing parts of the old HTML**
 // instead.
-type Cursor = {
-    parent: Cursor | null;
-    root: Cursor;
-    child: (key: StateKey) => Cursor | null;
+type Cursor<State> = {
+    parent: Cursor<any> | null;
+    root: Cursor<any>;
+    child: (key: StateKey) => Cursor<any> | null;
 
-    state: any;
-    set: (newState: any) => void;
+    state: State;
+    set: (newState: State) => void;
 
     present: (present: Present, ...presentArgs: any[]) => Markup;
 };
@@ -382,9 +382,9 @@ return (
         path: StateKey[],
         cachedMarkup: CachedMarkup,
         updatingPath: StateKey[],
-        root?: Cursor,
-        parent?: Cursor,
-    ): Cursor => {
+        root?: Cursor<any>,
+        parent?: Cursor<any>,
+    ): Cursor<any> => {
         let [updatingKey, ...nextUpdatingPath] = updatingPath;
         if (updatingPath.length == 1) {
             // We've reached the end of the updating cursor. Subtree
@@ -416,7 +416,7 @@ return (
                     // updating path.
                     key === updatingKey ? nextUpdatingPath : [],
                     root,
-                    cursor as Cursor,
+                    cursor as Cursor<any>,
                 );
             },
 
@@ -438,16 +438,16 @@ return (
                 if (cached !== undefined && cached[0] === present && args.filter((v, i) => cached![1][i] !== v).length == 0) {
                     return cached[2];
                 }
-                return present(cursor as Cursor, ...args);
+                return present(cursor as Cursor<any>, ...args);
             },
         };
 
         if (root === undefined) {
-            cursor.root = cursor as Cursor;
-            root = cursor as Cursor;
+            cursor.root = cursor as Cursor<any>;
+            root = cursor as Cursor<any>;
         }
 
-        return cursor as Cursor;
+        return cursor as Cursor<any>;
     };
 
     updateRootElement(present(makeCursor(rootState, [], rootCachedMarkup, [])));

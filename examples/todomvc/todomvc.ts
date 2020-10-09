@@ -11,7 +11,7 @@ const toDoState = {
 	items: [] as ToDoItem[],
 };
 
-function presentToDo(cursor: Cursor): Markup {
+function presentToDo(cursor: Cursor<typeof toDoState>): Markup {
 	let items = cursor.child('items')!;
 	return ['body', {}, [
 		['section', {class: 'todoapp'}, [
@@ -42,8 +42,7 @@ function presentToDo(cursor: Cursor): Markup {
 	]];
 };
 
-function presentItems({ state, child, set }: Cursor): Markup {
-	let items = state as ToDoItem[];
+function presentItems({ state: items, child, set }: Cursor<ToDoItem[]>): Markup {
 	let children: Markup[] = [];
 
 	if (items.length > 0) {
@@ -71,8 +70,7 @@ function presentItems({ state, child, set }: Cursor): Markup {
 	return ['div', {}, children];
 };
 
-function presentItem({ state, child, parent, set }: Cursor, i: number): Markup {
-	let item = state as ToDoItem;
+function presentItem({ state: item, child, parent, set }: Cursor<ToDoItem>, i: number): Markup {
 	let liAttrs: {[key: string]: any} = {class: ''};
 	let checkboxAttrs: {[key: string]: any} = {
 		class: 'toggle', type: 'checkbox',

@@ -1,4 +1,4 @@
-declare type Present = (cursor: Cursor, ...args: any[]) => Markup;
+declare type Present = (cursor: Cursor<any>, ...args: any[]) => Markup;
 declare type Markup = Elem | {
     toString: () => string;
 };
@@ -6,12 +6,12 @@ declare type Elem = [string, Dict<string | Function>, Markup[]];
 declare type Dict<T> = {
     [key: string]: T;
 };
-declare type Cursor = {
-    parent: Cursor | null;
-    root: Cursor;
-    child: (key: StateKey) => Cursor | null;
-    state: any;
-    set: (newState: any) => void;
+declare type Cursor<State> = {
+    parent: Cursor<any> | null;
+    root: Cursor<any>;
+    child: (key: StateKey) => Cursor<any> | null;
+    state: State;
+    set: (newState: State) => void;
     present: (present: Present, ...presentArgs: any[]) => Markup;
 };
 declare type StateKey = string | number;

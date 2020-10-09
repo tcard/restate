@@ -115,7 +115,7 @@ state and arguments</strong> for this optimization to work.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="hljs-keyword">type</span> Present = (
-    cursor: Cursor,
+    cursor: Cursor&lt;<span class="hljs-built_in">any</span>&gt;,
     ...args: <span class="hljs-built_in">any</span>[]
 ) =&gt; Markup;</pre></div></div>
             
@@ -279,13 +279,13 @@ instead.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">type</span> Cursor = {
-    parent: Cursor | <span class="hljs-literal">null</span>;
-    root: Cursor;
-    child: <span class="hljs-function">(<span class="hljs-params">key: StateKey</span>) =&gt;</span> Cursor | <span class="hljs-literal">null</span>;
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">type</span> Cursor&lt;State&gt; = {
+    parent: Cursor&lt;<span class="hljs-built_in">any</span>&gt; | <span class="hljs-literal">null</span>;
+    root: Cursor&lt;<span class="hljs-built_in">any</span>&gt;;
+    child: <span class="hljs-function">(<span class="hljs-params">key: StateKey</span>) =&gt;</span> Cursor&lt;<span class="hljs-built_in">any</span>&gt; | <span class="hljs-literal">null</span>;
 
-    state: <span class="hljs-built_in">any</span>;
-    <span class="hljs-keyword">set</span>: <span class="hljs-function">(<span class="hljs-params">newState: <span class="hljs-built_in">any</span></span>) =&gt;</span> <span class="hljs-built_in">void</span>;
+    state: State;
+    <span class="hljs-keyword">set</span>: <span class="hljs-function">(<span class="hljs-params">newState: State</span>) =&gt;</span> <span class="hljs-built_in">void</span>;
 
     present: <span class="hljs-function">(<span class="hljs-params">present: Present, ...presentArgs: <span class="hljs-built_in">any</span>[]</span>) =&gt;</span> Markup;
 };
@@ -775,9 +775,9 @@ use identity comparison to find its corresponding DOM node.</p>
         path: StateKey[],
         cachedMarkup: CachedMarkup,
         updatingPath: StateKey[],
-        root?: Cursor,
-        parent?: Cursor,
-    </span>): <span class="hljs-params">Cursor</span> =&gt;</span> {
+        root?: Cursor&lt;<span class="hljs-built_in">any</span>&gt;,
+        parent?: Cursor&lt;<span class="hljs-built_in">any</span>&gt;,
+    </span>): <span class="hljs-params">Cursor</span>&lt;<span class="hljs-params">any</span>&gt; =&gt;</span> {
         <span class="hljs-keyword">let</span> [updatingKey, ...nextUpdatingPath] = updatingPath;
         <span class="hljs-keyword">if</span> (updatingPath.length == <span class="hljs-number">1</span>) {</pre></div></div>
             
@@ -835,7 +835,7 @@ updating path.</p>
             
             <div class="content"><div class='highlight'><pre>                    key === updatingKey ? nextUpdatingPath : [],
                     root,
-                    cursor <span class="hljs-keyword">as</span> Cursor,
+                    cursor <span class="hljs-keyword">as</span> Cursor&lt;<span class="hljs-built_in">any</span>&gt;,
                 );
             },
 
@@ -857,16 +857,16 @@ updating path.</p>
                 <span class="hljs-keyword">if</span> (cached !== <span class="hljs-literal">undefined</span> &amp;&amp; cached[<span class="hljs-number">0</span>] === present &amp;&amp; args.filter(<span class="hljs-function">(<span class="hljs-params">v, i</span>) =&gt;</span> cached![<span class="hljs-number">1</span>][i] !== v).length == <span class="hljs-number">0</span>) {
                     <span class="hljs-keyword">return</span> cached[<span class="hljs-number">2</span>];
                 }
-                <span class="hljs-keyword">return</span> present(cursor <span class="hljs-keyword">as</span> Cursor, ...args);
+                <span class="hljs-keyword">return</span> present(cursor <span class="hljs-keyword">as</span> Cursor&lt;<span class="hljs-built_in">any</span>&gt;, ...args);
             },
         };
 
         <span class="hljs-keyword">if</span> (root === <span class="hljs-literal">undefined</span>) {
-            cursor.root = cursor <span class="hljs-keyword">as</span> Cursor;
-            root = cursor <span class="hljs-keyword">as</span> Cursor;
+            cursor.root = cursor <span class="hljs-keyword">as</span> Cursor&lt;<span class="hljs-built_in">any</span>&gt;;
+            root = cursor <span class="hljs-keyword">as</span> Cursor&lt;<span class="hljs-built_in">any</span>&gt;;
         }
 
-        <span class="hljs-keyword">return</span> cursor <span class="hljs-keyword">as</span> Cursor;
+        <span class="hljs-keyword">return</span> cursor <span class="hljs-keyword">as</span> Cursor&lt;<span class="hljs-built_in">any</span>&gt;;
     };
 
     updateRootElement(present(makeCursor(rootState, [], rootCachedMarkup, [])));
