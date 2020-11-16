@@ -423,13 +423,17 @@ return (
             state: state,
             set: (newState: any) => {
                 let updating: any = rootState;
-                path.forEach((k, i) => {
-                    if (i == path.length - 1) {
-                        updating[k] = newState;
-                    } else {
-                        updating = updating[k];
-                    }
-                });
+                if (path.length == 0) {
+                    rootState = newState;
+                } else {
+                    path.forEach((k, i) => {
+                        if (i == path.length - 1) {
+                            updating[k] = newState;
+                        } else {
+                            updating = updating[k];
+                        }
+                    });
+                }
                 updateRootElement(present(makeCursor(rootState, [], rootCachedMarkup, path), ...presentArgs));
             },
 

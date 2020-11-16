@@ -293,14 +293,19 @@ var Restate = (function () {
                 state: state,
                 set: function (newState) {
                     var updating = rootState;
-                    path.forEach(function (k, i) {
-                        if (i == path.length - 1) {
-                            updating[k] = newState;
-                        }
-                        else {
-                            updating = updating[k];
-                        }
-                    });
+                    if (path.length == 0) {
+                        rootState = newState;
+                    }
+                    else {
+                        path.forEach(function (k, i) {
+                            if (i == path.length - 1) {
+                                updating[k] = newState;
+                            }
+                            else {
+                                updating = updating[k];
+                            }
+                        });
+                    }
                     updateRootElement(present.apply(void 0, __spreadArrays([makeCursor(rootState, [], rootCachedMarkup, path)], presentArgs)));
                 },
                 present: function (present) {

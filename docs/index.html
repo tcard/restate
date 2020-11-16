@@ -842,13 +842,17 @@ updating path.</p>
             state: state,
             <span class="hljs-keyword">set</span>: <span class="hljs-function">(<span class="hljs-params">newState: <span class="hljs-built_in">any</span></span>) =&gt;</span> {
                 <span class="hljs-keyword">let</span> updating: <span class="hljs-built_in">any</span> = rootState;
-                path.forEach(<span class="hljs-function">(<span class="hljs-params">k, i</span>) =&gt;</span> {
-                    <span class="hljs-keyword">if</span> (i == path.length - <span class="hljs-number">1</span>) {
-                        updating[k] = newState;
-                    } <span class="hljs-keyword">else</span> {
-                        updating = updating[k];
-                    }
-                });
+                <span class="hljs-keyword">if</span> (path.length == <span class="hljs-number">0</span>) {
+                    rootState = newState;
+                } <span class="hljs-keyword">else</span> {
+                    path.forEach(<span class="hljs-function">(<span class="hljs-params">k, i</span>) =&gt;</span> {
+                        <span class="hljs-keyword">if</span> (i == path.length - <span class="hljs-number">1</span>) {
+                            updating[k] = newState;
+                        } <span class="hljs-keyword">else</span> {
+                            updating = updating[k];
+                        }
+                    });
+                }
                 updateRootElement(present(makeCursor(rootState, [], rootCachedMarkup, path), ...presentArgs));
             },
 
